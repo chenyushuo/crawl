@@ -2,7 +2,7 @@
 #define VIEW_SOURCE_H
 
 void InitViewer();
-char *Download(char *filename);
+char *Download(const char *filename);
 void CloseViewer();
 
 #endif

@@ -3,16 +3,27 @@
 #include <cstdio>
 #include <cstring>
 
+#include <iostream>
+
+#include <string>
+
+using namespace std;
+
 static string content;
 static string site_prefix;
 static int cursor_position;
 
 void SetPage(string *web_site, string *page_content){
 	string :: size_type end = web_site -> find_last_of("/");
-	site_prefix = string(*web_site, 0, end);
+	if (web_site -> find("://") + strlen("://") < end && end != string :: npos)
+		site_prefix = string(*web_site, 0, end + 1);
+	else
+		site_prefix = *web_site + "/";
 	
 	content = *page_content;
 	cursor_position = 0;
+	
+	//cerr << site_prefix << endl;
 }
 
 string *GetNextUrl(){
@@ -20,19 +31,37 @@ string *GetNextUrl(){
 	string *result = new string;		
 	
 	do{
-		begin = content . find("<a href=\"", cursor_position) + strlen("<a href=\"");
-		end = content . find("\"", begin);
+		if (cursor_position >= (int)content . length()){
+			delete result;
+			return NULL;
+		}
+				
+		begin = content . find("<a href=\"", cursor_position);
+		if (begin == string :: npos){
+			delete result;
+			return NULL;
+		}
+		begin += strlen("<a href=\"");
 		
-		if (begin == string :: npos || end == string :: npos){
+		end = content . find("\"", begin);		
+		if (end == string :: npos){
 			delete result;
 			return NULL;
 		}
 		
-		if (result -> find("http://") != 0 && result -> find("https://") != 0)
+		//cerr << begin << " " << end << " " << cursor_position << " " << content . length() << endl;
+				
+		*result = content . substr(begin, end - begin);
+		
+		if (result -> find("http://") == string :: npos && result -> find("https://") == string :: npos)
 			*result = site_prefix + *result;
-	}while (result -> find(seed) == 0);
+			
+		cursor_position = end + 1;
+	}while (result -> find(seed) == string :: npos);
 	
-	cursor_position = end + 1;
+	cerr << "GET : " << *result << endl;
+	/*for (int i = 1; i <= 1000000; i ++)
+		;*/
 	
 	return result;
 }

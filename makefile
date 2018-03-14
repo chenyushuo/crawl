@@ -1,15 +1,10 @@
 run : main
-	gnome-terminal -x bash -c "
-		./main
-		echo ------------------------------
-		echo 按任意键继续
-		read -n 1
-	"
+	./main
 	
 objects = main.o crawl.o filter.o view_source.o
 
 main : $(objects)
-	g++ -o main $(objects) -Wall
+	g++ -o main $(objects) -Wall -lcurl
 	
 main.o : main.cpp crawl.h
 	g++ -c main.cpp -Wall

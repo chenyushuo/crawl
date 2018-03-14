@@ -1,11 +1,13 @@
 #ifndef FILTER_H
 #define FILTER_H
 
-#include <cstring>
+#include <string>
+
+using namespace std;
 
 const string seed = string("http://info.ruc.edu.cn");
 
-void SetPage(string *web_site, string *page_content);
-void GetNextUrl();
+void SetPage(std :: string *web_site, std :: string *page_content);
+string *GetNextUrl();
 
 #endif

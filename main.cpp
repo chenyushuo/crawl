@@ -3,6 +3,6 @@
 #include "crawl.h"
 
 int main(){
-	crwal();
+	crawl();
 	return 0;
 }
