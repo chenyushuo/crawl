@@ -73,15 +73,16 @@ char *Download(const char *web_site){
 	memset(buffer, 0, sizeof(char) * strlen(buffer));
 	
 	curl_easy_setopt(curl_handle, CURLOPT_URL, web_site);
-	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 3);
+	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 5);
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, &write_data);
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, buffer);
+	curl_easy_setopt(curl_handle, CURLOPT_DNS_CACHE_TIMEOUT, 120000);
 	
 	return_code = curl_easy_perform(curl_handle);
 	if (return_code != CURLE_OK){
-		fprintf(stderr, "%s curl_easy_perform() failed: %s\n",
-			web_site,
-			curl_easy_strerror(return_code));
+		FILE *fp = fopen("error.log", "a+");
+		fprintf(fp, "%30s: %s\n", curl_easy_strerror(return_code), web_site);
+		fclose(fp);
 		return NULL;
 	}
 	

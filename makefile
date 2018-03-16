@@ -1,5 +1,5 @@
 run : main
-	./main
+	reset && ./main
 	
 objects = main.o crawl.o filter.o view_source.o
 

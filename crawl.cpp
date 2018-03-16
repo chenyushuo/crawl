@@ -29,7 +29,7 @@ void crawl(){
 	
 	InitViewer();
 	
-	//int times = 0;
+	int number_of_web_site = 0;
 	
 	while (!queue_of_web_site -> empty()){
 		//if (++ times == 10)
@@ -45,12 +45,17 @@ void crawl(){
 		string *page_content = new string(buffer);
 		SetPage(web_site, page_content);
 		
+		number_of_web_site ++;
 		cerr << *web_site << " catched!" << endl;
+		cerr << "Catched = " << number_of_web_site << endl;
 		
 		string *next_url;
 		while ((next_url = GetNextUrl()) != NULL){
 			//cerr << "next_url = " << *next_url << endl;
 			if (set_of_web_site -> count(*next_url) == 0){
+				FILE *fp = fopen("origin.log", "a+");
+				fprintf(fp, "%s -> %s\n", web_site -> c_str(), next_url -> c_str());
+				fclose(fp);
 				queue_of_web_site -> push(*next_url);
 				set_of_web_site -> insert(*next_url);
 			}

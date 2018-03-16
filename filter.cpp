@@ -28,7 +28,7 @@ void SetPage(string *web_site, string *page_content){
 
 string *GetNextUrl(){
 	string :: size_type begin, end;
-	string *result = new string;		
+	string *result = new string;
 	
 	do{
 		if (cursor_position >= (int)content . length()){
@@ -36,14 +36,24 @@ string *GetNextUrl(){
 			return NULL;
 		}
 				
-		begin = content . find("<a href=\"", cursor_position);
+		begin = content . find("<a", cursor_position);
 		if (begin == string :: npos){
 			delete result;
 			return NULL;
 		}
-		begin += strlen("<a href=\"");
+		begin = content . find("href", begin);
+		if (begin == string :: npos){
+			delete result;
+			return NULL;
+		}
+		begin = min(content . find("'", begin), content . find("\"", begin));
+		if (begin == string :: npos){
+			delete result;
+			return NULL;
+		}
+		begin ++;
 		
-		end = content . find("\"", begin);		
+		end = min(content . find("'", begin), content . find("\"", begin));
 		if (end == string :: npos){
 			delete result;
 			return NULL;
@@ -57,11 +67,6 @@ string *GetNextUrl(){
 			*result = site_prefix + *result;
 			
 		cursor_position = end + 1;
-	}while (result -> find(seed) == string :: npos);
-	
-	cerr << "GET : " << *result << endl;
-	/*for (int i = 1; i <= 1000000; i ++)
-		;*/
-	
+	}while (result -> find(seed) == string :: npos);	
 	return result;
 }
