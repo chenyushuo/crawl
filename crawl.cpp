@@ -11,6 +11,7 @@
 
 #include "filter.h"
 #include "view_source.h"
+#include "kbhit.h"
 
 using namespace std;
 
@@ -28,12 +29,13 @@ void crawl(){
 	set_of_web_site -> insert(seed);
 	
 	InitViewer();
+	InitKeyboard();
 	
 	int number_of_web_site = 0;
 	
 	while (!queue_of_web_site -> empty()){
-		//if (++ times == 10)
-		//	break;
+		CheckKeyboard();
+		
 		string *web_site = new string(queue_of_web_site -> front());
 		queue_of_web_site -> pop();
 		
@@ -71,4 +73,5 @@ void crawl(){
 	}
 	
 	CloseViewer();
+	CloseKeyboard();
 }
