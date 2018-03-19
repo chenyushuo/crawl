@@ -9,7 +9,7 @@ using namespace std;
 const string key_word = string("ruc");
 const char *forbidden_string[] = {"@", "#", "(", ")", "[", "]", "{", "}",
 					".txt", ".doc", ".ppt", ".xls", ".pdf", ".PDF", "ftp://", "file://", "telnet://",
-					".jpg", ".jpeg", ".png", ".gif", ".bmp", ".rar", ".zip", ".7z", ".mp3", ".mp4", ".MP4",
+					".jpg", ".JPG", ".jpeg", ".png", ".gif", ".bmp", ".rar", ".zip", ".7z", ".mp3", ".mp4", ".MP4",
 					"javascript:void(0)", "javascript:;",
 					".flv", ".wmv", ".avi", ".rmvb", ".mpeg", ".qt", ".mpg", ".mkv", ".rm",
 					"twitter", "google", "facebook", "END"};

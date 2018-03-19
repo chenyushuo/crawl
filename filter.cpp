@@ -71,7 +71,7 @@ static void DeleteRelativePath(string *web_site){
 	
 	do{
 		section = web_site -> substr(begin, end - begin + 1);
-		if (section == "./"){
+		if (section == "./" || section == "/"){
 			
 		}
 		else if (section == "../"){
@@ -123,7 +123,7 @@ static void DeleteArgv(string *web_site){
 		if (end == string :: npos)
 			end = web_site -> length();
 		
-		string key_name = web_site -> substr(begin, equal - begin);
+		string key_name = web_site -> substr(begin, equal - begin + 1);
 		string the_whole_key = web_site -> substr(begin , end - begin);
 		string :: size_type result_begin = result -> find(key_name);
 		
@@ -146,8 +146,8 @@ static void DeleteArgv(string *web_site){
 }
 
 static void NormalizeWebSite(string *web_site){
-	DeleteRelativePath(web_site);		
-	EraseSpaceChar(web_site);
+	//EraseSpaceChar(web_site);
+	DeleteRelativePath(web_site);
 	DeleteArgv(web_site);
 }
 
@@ -189,6 +189,8 @@ string *GetNextUrl(){
 		//cerr << begin << " " << end << " " << cursor_position << " " << content . length() << endl;
 				
 		*result = content . substr(begin, end - begin);
+		
+		EraseSpaceChar(result);
 		
 		if (result -> find("http://") == string :: npos && result -> find("https://") == string :: npos){
 			if (result -> length() == 0 || result -> at(0) == '/')
