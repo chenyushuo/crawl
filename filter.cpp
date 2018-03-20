@@ -10,14 +10,16 @@
 using namespace std;
 
 static string content;
+static string site;
 static string site_prefix;
 static string site_root;
 static int cursor_position;
 static bool web_site_error = false;
 
 void SetPage(string *web_site, string *page_content){
+	site = *web_site;
 	string :: size_type begin = web_site -> find("://");
-	string :: size_type end = web_site -> find_last_of("/");
+	string :: size_type end = web_site -> find_last_of("/", web_site -> find("?"));
 	if (begin == string :: npos){
 		FILE *fp = fopen("error.log", "a+");
 		fprintf(fp, "%s is illegal!\n", web_site -> c_str());
@@ -41,21 +43,25 @@ void SetPage(string *web_site, string *page_content){
 	
 	content = *page_content;
 	cursor_position = 0;
-	
-	//cerr << site_prefix << endl;
 }
 
 static bool ValidUrl(string *result){
 	if (result -> find("http") != 0)
 		return false;
-	if (result -> find("://") == string :: npos)
+	
+	string :: size_type begin = result -> find("://");
+	if (begin == string :: npos)
 		return false;
-	if (result -> find(key_word) == string :: npos)
+	begin += strlen("://");
+	string :: size_type end = result -> find("/", begin);
+	string :: size_type position = result -> find(key_word);
+	if (!(begin <= position && position < end))
 		return false;
-	for (const char **ptr = forbidden_string; strcmp(*ptr, "END"); ptr ++){
+	
+	for (const char **ptr = forbidden_string; strcmp(*ptr, "END"); ptr ++)
 		if (result -> find(*ptr) != string :: npos)
 			return false;
-	}
+	
 	return true;
 }
 
@@ -145,8 +151,22 @@ static void DeleteArgv(string *web_site){
 	delete result;
 }
 
+static void AddPrefix(string *web_site){
+	if (web_site -> length() == 0)
+		*web_site = site_root;
+	else if (web_site -> find("http") == string :: npos){
+		if (web_site -> at(0) == '/')
+			*web_site = site_root + *web_site;
+		else if (web_site -> at(0) == '?')
+			*web_site = site . substr(0, site . find("?")) + *web_site;
+		else
+			*web_site = site_prefix + *web_site;
+	}
+}
+
 static void NormalizeWebSite(string *web_site){
-	//EraseSpaceChar(web_site);
+	EraseSpaceChar(web_site);
+	AddPrefix(web_site);
 	DeleteRelativePath(web_site);
 	DeleteArgv(web_site);
 }
@@ -187,22 +207,10 @@ string *GetNextUrl(){
 		}
 		
 		//cerr << begin << " " << end << " " << cursor_position << " " << content . length() << endl;
-				
-		*result = content . substr(begin, end - begin);
-		
-		EraseSpaceChar(result);
-		
-		if (result -> find("http://") == string :: npos && result -> find("https://") == string :: npos){
-			if (result -> length() == 0 || result -> at(0) == '/')
-				*result = site_root + *result;
-			else
-				*result = site_prefix + *result;
-		}
+		*result = content . substr(begin, end - begin);		
+		NormalizeWebSite(result);
 			
 		cursor_position = end + 1;
 	}while (ValidUrl(result) == false);
-	
-	NormalizeWebSite(result);
-	
 	return result;
 }
