@@ -20,8 +20,6 @@ using namespace std;
 const static int kMaxFileLength = 10000000;
 const static int kMaxFileNameLength = 240;
 
-static const string save_directory = string("/media/workspace/download from www.ruc.edu.cn/");
-
 static CURL *curl_handle;
 static CURLcode return_code;
 
