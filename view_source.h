@@ -7,6 +7,7 @@ using namespace std;
 
 #ifdef VIEW_SOURCE_CPP
 static const string save_directory = string("/media/workspace/download from www.ruc.edu.cn/");
+
 #endif
 
 void InitViewer();
